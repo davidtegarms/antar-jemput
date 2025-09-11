@@ -5,6 +5,7 @@
     $totalAdmin = User::where('role', 'admin')->count();
     $totalDriver = User::where('role', 'driver')->count();
     $totalParent = User::where('role', 'parent')->count();
+    $totalStudents = User::where('role', 'parent')->count();
     // Ambil 5 data perjalanan terbaru langsung dari database
     $recentTrips = \App\Models\Trip::latest()->limit(5)->get();
 @endphp
@@ -19,21 +20,52 @@
             Anda dapat mengelola driver, siswa, dan perjalanan dari menu di samping.
         </p>
     </div>
-    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+     <style>
+        .stats-card-container {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .stats-card {
+            flex: 1 1 200px;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .stats-card h2 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .stats-card p {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0;
+        }
+    </style>
+    
+    <div class="stats-card-container">
         
-        <div style="flex: 1; min-width: 250px; background-color: #d1f7e0; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            <h2 style="font-size: 1.25rem; font-weight: bold;">Total Admin</h2>
-            <p style="font-size: 2rem; font-weight: bold; color: #16a34a;">{{ $totalAdmin }}</p>
+        <div class="stats-card" style="background-color: #d1f7e0;">
+            <h2 style="color: #16a34a;">Total Admin</h2>
+            <p style="color: #16a34a;">{{ $totalAdmin }}</p>
         </div>
         
-        <div style="flex: 1; min-width: 250px; background-color: #cff4fc; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            <h2 style="font-size: 1.25rem; font-weight: bold;">Total Driver</h2>
-            <p style="font-size: 2rem; font-weight: bold; color: #0891b2;">{{ $totalDriver }}</p>
+        <div class="stats-card" style="background-color: #cff4fc;">
+            <h2 style="color: #0891b2;">Total Driver</h2>
+            <p style="color: #0891b2;">{{ $totalDriver }}</p>
         </div>
         
-        <div style="flex: 1; min-width: 250px; background-color: #fef3c7; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            <h2 style="font-size: 1.25rem; font-weight: bold;">Total Orang Tua</h2>
-            <p style="font-size: 2rem; font-weight: bold; color: #d97706;">{{ $totalParent }}</p>
+        <div class="stats-card" style="background-color: #fef3c7;">
+            <h2 style="color: #d97706;">Total Orang Tua</h2>
+            <p style="color: #d97706;">{{ $totalParent }}</p>
+        </div>
+
+        <div class="stats-card" style="background-color: #f3e8ff;">
+            <h2 style="color: #a855f7;">Total Siswa</h2>
+            <p style="color: #a855f7;">{{ $totalStudents }}</p>
         </div>
     </div>
      <style>
