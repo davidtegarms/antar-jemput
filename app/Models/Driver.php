@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Driver extends Model
 {
@@ -12,21 +13,21 @@ class Driver extends Model
 
     protected $fillable = [
         'user_id',
-        'name',
-        'phone_number',
-        'license_plate',
-        'vehicle_type',
-        'vehicle_name',
+        'name_driver',
+        'birthdate_driver',
+        'address_driver',
+        'phone_driver',
+        'status_driver',
     ];
-    //Relasi
+    
     public function user(): BelongsTo
-    { 
-        return $this->belongsTo(User::class); 
-    }
+        {
+            return $this->belongsTo(User::class);
+        }
 
-    public function trips() 
-    { 
-        return $this->hasMany(Trip::class); 
+    // Hash password otomatis ketika diisi
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
     }
 }
-

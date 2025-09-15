@@ -2,21 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\StudentResource\Pages;
-use App\Filament\Resources\StudentResource\RelationManagers;
-use App\Models\Student;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Fieldset;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables\Columns\TextColumn;
+use App\Models\User;
 use Filament\Tables;
+use App\Models\Student;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\StudentResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\StudentResource\RelationManagers;
 
 class StudentResource extends Resource
 {
@@ -26,22 +27,35 @@ class StudentResource extends Resource
     protected static ?string $modelLabel = 'Siswa';
     protected static ?string $pluralModelLabel = 'Siswa';
 
+    protected static ?int $navigationSort = 20; // Urutan menu di sidebar
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 //
-                TextInput::make('name')
-                    ->required()
-                    ->label('Nama Siswa'),
-                // Pilihan user dengan peran 'parent' dari tabel users
-                Select::make('parent_id')
-                    ->relationship('parent', 'name', fn ($query) => $query->where('role', 'parent'))
-                    ->required()
-                    ->label('Nama Orang Tua'),
-                TextInput::make('school_name')
-                    ->required()
-                    ->label('Nama Sekolah'),
+                Select::make('user_id')
+                    ->label('Username')
+                    ->options(User::where('role', 'student')->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
+
+                TextInput::make('name_student')
+                    ->label('Nama Lengkap')
+                    ->required(),
+
+                TextInput::make('address_student')
+                    ->label('Alamat')
+                    ->required(),
+
+                TextInput::make('phone_student')
+                    ->label('Nomor Telepon')
+                    ->tel()
+                    ->nullable(),
+
+                TextInput::make('class_student')
+                    ->label('Kelas')
+                    ->nullable(),
 
                 // --- Form Alamat Penjemputan ---
                 Fieldset::make('Alamat Penjemputan')
@@ -96,16 +110,22 @@ class StudentResource extends Resource
         return $table
             ->columns([
                 //
-                TextColumn::make('name')
-                    ->label('Nama Siswa')
-                    ->searchable()
+                TextColumn::make('id')
                     ->sortable(),
-                TextColumn::make('parent.name')
-                    ->label('Nama Orang Tua')
-                    ->searchable()
+                TextColumn::make('user.name')
+                    ->label('Username')
                     ->sortable(),
-                TextColumn::make('school_name')
-                    ->label('Nama Sekolah'),
+                TextColumn::make('name_student')
+                    ->label('Nama Lengkap')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('class_student')
+                    ->label('Kelas')
+                    ->sortable(),
+                TextColumn::make('phone_student')
+                    ->label('No. Telepon')
+                    ->searchable(),
+            
             ])
             ->filters([
                 //
@@ -113,6 +133,11 @@ class StudentResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
+
+            ->headerActions([
+                // Tables\Actions\CreateAction::make(),
+            ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -131,8 +156,8 @@ class StudentResource extends Resource
     {
         return [
             'index' => Pages\ListStudents::route('/'),
-            'create' => Pages\CreateStudent::route('/create'),
-            'edit' => Pages\EditStudent::route('/{record}/edit'),
+            // 'create' => Pages\CreateStudent::route('/create'),
+            // 'edit' => Pages\EditStudent::route('/{record}/edit'),
         ];
     }
 }

@@ -16,4 +16,5 @@ class EditTrip extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
 }

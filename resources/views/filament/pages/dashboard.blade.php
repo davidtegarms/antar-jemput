@@ -4,8 +4,7 @@
     // Ambil data langsung dari model
     $totalAdmin = User::where('role', 'admin')->count();
     $totalDriver = User::where('role', 'driver')->count();
-    $totalParent = User::where('role', 'parent')->count();
-    $totalStudents = User::where('role', 'parent')->count();
+    $totalStudents = User::where('role', 'student')->count();
     // Ambil 5 data perjalanan terbaru langsung dari database
     $recentTrips = \App\Models\Trip::latest()->limit(5)->get();
 @endphp
@@ -17,7 +16,7 @@
             Selamat datang di Dashboard Sistem Antar Jemput Siswa.
         </p>
         <p style="font-size: 1rem; color: #6b7280; margin-top: 20px;">
-            Anda dapat mengelola driver, siswa, dan perjalanan dari menu di samping.
+            Anda dapat mengelola sopir, siswa, dan perjalanan dari menu di samping.
         </p>
     </div>
      <style>
@@ -56,11 +55,6 @@
         <div class="stats-card" style="background-color: #cff4fc;">
             <h2 style="color: #0891b2;">Total Driver</h2>
             <p style="color: #0891b2;">{{ $totalDriver }}</p>
-        </div>
-        
-        <div class="stats-card" style="background-color: #fef3c7;">
-            <h2 style="color: #d97706;">Total Orang Tua</h2>
-            <p style="color: #d97706;">{{ $totalParent }}</p>
         </div>
 
         <div class="stats-card" style="background-color: #f3e8ff;">

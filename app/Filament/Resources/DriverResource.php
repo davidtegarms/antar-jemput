@@ -2,52 +2,66 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\DriverResource\Pages;
-use App\Filament\Resources\DriverResource\RelationManagers;
-use App\Models\Driver;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
+use App\Models\User;
 use Filament\Tables;
+use App\Models\Driver;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
+use App\Filament\Resources\DriverResource\Pages;
 
 class DriverResource extends Resource
 {
     protected static ?string $model = Driver::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-truck';
+    protected static ?string $navigationIcon = 'heroicon-o-user';
     protected static ?string $modelLabel = 'Driver';
-    protected static ?string $pluralModelLabel = 'Driver';
-
+    protected static ?string $pluralModelLabel = 'Sopir';
+    
+    public static function shouldRegisterNavigation(): bool
+    {
+    return false;
+    }
+    
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                // Pilihan user dengan peran 'driver' dari tabel users
                 Select::make('user_id')
-                    ->relationship('user', 'name', fn ($query) => $query->where('role', 'driver'))
-                    ->required()
-                    ->label('Nama Driver'),
-                TextInput::make('phone_number')
+                    ->label('Username')
+                    ->options(User::where('role', 'driver')->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
+                    
+                TextInput::make('name_driver')
+                    ->label('Full Name')
+                    ->required(),
+
+                DatePicker::make('birthdate_driver')
+                    ->label('Birthdate')
+                    ->nullable(),
+
+                TextInput::make('address_driver')
+                    ->label('Address')
+                    ->nullable(),
+
+                TextInput::make('phone_driver')
+                    ->label('Phone Number')
                     ->tel()
-                    ->required()
-                    ->label('Nomor Telepon'),
-                TextInput::make('license_plate')
-                    ->required()
-                    ->label('Plat Nomor Kendaraan'),
-                TextInput::make('vehicle_type')
-                    ->label('Jenis Kendaraan')
-                    ->placeholder('Contoh: Mobil, Motor'),
-                TextInput::make('vehicle_name')
-                    ->label('Nama Kendaraan')
-                     ->placeholder('Contoh: Honda CRV Merah'),
+                    ->nullable(),
+
+                Select::make('status_driver')
+                    ->options([
+                        'active' => 'Active',
+                        'inactive' => 'Inactive',
+                    ])
+                    ->default('inactive')
+                    ->required(),
             ]);
     }
 
@@ -55,26 +69,38 @@ class DriverResource extends Resource
     {
         return $table
             ->columns([
-                //
-                TextColumn::make('user.name')
-                    ->label('Nama Driver')
-                    ->searchable()
+                TextColumn::make('id')
                     ->sortable(),
-                TextColumn::make('phone_number')
-                    ->label('Nomor Telepon'),
-                TextColumn::make('license_plate')
-                    ->label('Plat Nomor'),
-                TextColumn::make('vehicle_type')
-                    ->label('Jenis Kendaraan'),
-                TextColumn::make('vehicle_name')
-                    ->label('Nama Kendaraan'),
-            ])
-            ->filters([
-                //
+                TextColumn::make('user.name')
+                    ->label('Username')
+                    ->sortable(),
+                TextColumn::make('name_driver')
+                    ->label('Nama')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('birthdate_driver')
+                    ->label('Tanggal Lahir')
+                    ->date(),
+                TextColumn::make('phone_driver')
+                    ->label('Nomor HP'),
+                TextColumn::make('status_driver')
+                    ->label('Status')
+                    ->badge()
+                    ->colors([
+                        'success' => 'active',
+                        'danger' => 'inactive',
+                    ]),
+            
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
+
+            ->headerActions([
+                // 
+            ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -84,17 +110,15 @@ class DriverResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListDrivers::route('/'),
-            'create' => Pages\CreateDriver::route('/create'),
-            'edit' => Pages\EditDriver::route('/{record}/edit'),
+            // 'create' => Pages\CreateDriver::route('/create'),
+            // 'edit' => Pages\EditDriver::route('/{record}/edit'),
         ];
     }
 }

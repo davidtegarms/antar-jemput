@@ -3,13 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Student extends Model
 {
     protected $fillable = [
-    'name',
-    'parent_id',
-    'school_name',
+    'user_id',
+    'name_student',
+    'address_student',
+    'phone_student',
+    'class_student',
+
     'pickup_address_jalan', 
     'pickup_address_kelurahan', 
     'pickup_address_kecamatan', 
@@ -24,9 +28,10 @@ class Student extends Model
     'dropoff_address_keterangan',
 ];
     //Relasi
-    public function parent() 
-    { 
-        return $this->belongsTo(User::class, 'parent_id'); 
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function trips() 

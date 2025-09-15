@@ -2,17 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TripResource\Pages;
 use App\Models\Trip;
+use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Form;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 
 class TripResource extends Resource
@@ -23,29 +23,30 @@ class TripResource extends Resource
     protected static ?string $modelLabel = 'Trip';
     protected static ?string $pluralModelLabel = 'Trip';
 
+    protected static ?int $navigationSort = 40;
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Select::make('driver_id')
-                    // Memperbaiki relasi untuk menunjuk langsung ke 'User'
                     ->relationship('driver', 'name', fn (Builder $query) => $query->where('role', 'driver'))
                     ->required()
                     ->label('Driver'),
-                
+
                 Select::make('student_id')
                     ->relationship('student', 'name')
                     ->required()
                     ->label('Siswa'),
 
-                DatePicker::make('date') // Tambahkan field tanggal
+                DatePicker::make('date')
                     ->required()
                     ->label('Tanggal'),
 
                 TimePicker::make('scheduled_time')
                     ->required()
                     ->label('Waktu Terjadwal'),
-                
+
                 Select::make('trip_type')
                     ->options([
                         'jemput' => 'Jemput',
@@ -53,7 +54,7 @@ class TripResource extends Resource
                     ])
                     ->required()
                     ->label('Tipe Perjalanan'),
-                
+
                 Select::make('status')
                     ->options([
                         'scheduled' => 'Terjadwal',
@@ -115,22 +116,25 @@ class TripResource extends Resource
                         'completed' => 'Selesai',
                         'cancelled' => 'Dibatalkan',
                     ]),
+            ])
+            ->headerActions([
+                // Tables\Actions\CreateAction::make(), // ✅ Tambah data via modal
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),   // ✅ Edit juga via modal
+                Tables\Actions\DeleteAction::make(),
             ]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTrips::route('/'),
-            'create' => Pages\CreateTrip::route('/create'),
-            'edit' => Pages\EditTrip::route('/{record}/edit'),
+            'index' => \App\Filament\Resources\TripResource\Pages\ListTrips::route('/'),
         ];
     }
 }

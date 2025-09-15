@@ -21,6 +21,10 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $modelLabel = 'User';
+    protected static ?string $pluralModelLabel = 'Users';
+    
+    protected static ?int $navigationSort = 10; // Urutan menu di sidebar
 
     public static function form(Form $form): Form
     {
@@ -43,7 +47,7 @@ class UserResource extends Resource
                     ->options([
                         'admin' => 'Admin',
                         'driver' => 'Driver',
-                        'parent' => 'Parent',
+                        'student' => 'Student',
                     ])
                     ->required(),
             ]);
@@ -54,16 +58,19 @@ class UserResource extends Resource
         return $table
             ->columns([
                 //
+                TextColumn::make('id')->sortable(),
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->label('Username')
+                    ->searchable()->sortable(),
                 TextColumn::make('email')
-                    ->searchable(),
+                    ->searchable()->sortable(),
                 TextColumn::make('role')
+                    ->sortable()
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'admin' => 'success',
                         'driver' => 'info',
-                        'parent' => 'primary',
+                        'student' => 'primary',
                     }),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -75,11 +82,15 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ])
+            ->headerActions([
+                // Tables\Actions\CreateAction::make(),
             ]);
     }
 
@@ -94,8 +105,8 @@ class UserResource extends Resource
     {
         return [
             'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            // 'create' => Pages\CreateUser::route('/create'),
+            // 'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
 }

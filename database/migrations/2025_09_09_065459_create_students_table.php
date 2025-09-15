@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('parent_id')->constrained('users')->cascadeOnDelete();
-            $table->string('school_name');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('name_student');
+            $table->text('address_student');
+            $table->string('phone_student')->nullable();
+            $table->string('class_student')->nullable();
+            
             // Kolom untuk Alamat Penjemputan
             $table->string('pickup_address_jalan')->nullable();
             $table->string('pickup_address_kelurahan')->nullable();
