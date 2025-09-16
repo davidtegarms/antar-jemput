@@ -19,7 +19,7 @@
         </button>
         <button wire:click="setTab('jemput')" 
             class="px-4 py-2 rounded-full 
-            {{ $tab === 'jemput' ? 'bg-blue-500 text-white' : 'bg-gray-700' }}">
+            {{ $tab === 'jemput' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700' }}">
             Jemput
         </button>
     </div>

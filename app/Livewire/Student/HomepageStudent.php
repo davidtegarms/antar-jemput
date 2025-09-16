@@ -5,7 +5,7 @@ namespace App\Http\Livewire\Student;
 use Livewire\Component;
 use App\Models\User;
 
-class Homepage extends Component
+class HomepageStudent extends Component
 {
     public $tab = 'antar'; // default tab
 
@@ -19,8 +19,10 @@ class Homepage extends Component
         // Ambil driver dari users dengan role = driver
         $drivers = User::where('role', 'driver')->get();
 
-        return view('livewire.student.homepage', [
+        return view('livewire.student.homepage-student', [
             'drivers' => $drivers,
+            'tab' => $this->tab,
         ]);
     }
 }
+    
