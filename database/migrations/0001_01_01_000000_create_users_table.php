@@ -46,9 +46,5 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
-        Schema::table('users', function (Blueprint $table) {
-            // Hapus kolom 'role' jika migrasi di-rollback
-            $table->dropColumn('role');
-        });
     }
 };

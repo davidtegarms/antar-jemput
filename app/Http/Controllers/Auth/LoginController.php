@@ -56,4 +56,18 @@ class LoginController extends Controller
 
         return redirect()->route('login');
     }
+
+    protected function authenticated($request, $user)
+    {
+        if ($user->role === 'student') {
+            return redirect()->route('student.dashboard');
+        } elseif ($user->role === 'driver') {
+            return redirect()->route('driver.dashboard');
+        } elseif ($user->role === 'admin') {
+            return redirect('/admin'); // Filament admin
+        }
+
+        return redirect('/'); // default
+    }
+   
 }
